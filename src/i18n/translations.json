@@ -1,0 +1,212 @@
+{
+  "fr": {
+    "nav": {
+      "home": "Accueil",
+      "shop": "Boutique",
+      "about": "À Propos",
+      "contact": "Contact",
+      "order": "Commander"
+    },
+    "hero": {
+      "badge": "Parapharmacie Premium à Kasserine",
+      "title": "Soin.",
+      "title2": "Confiance.",
+      "title3": "Féminité.",
+      "subtitle": "Des produits de santé et de beauté authentiques, des meilleures marques mondiales, livrés avec le conseil d'experts.",
+      "cta_shop": "Découvrir la boutique",
+      "cta_whatsapp": "Commander via WhatsApp",
+      "stat1": "5 300+",
+      "stat1Label": "Clientes fidèles",
+      "stat2": "100%",
+      "stat2Label": "Produits authentiques",
+      "stat3": "7j/7",
+      "stat3Label": "Ouvert tous les jours"
+    },
+    "trust": {
+      "title1": "Qualité Garantie",
+      "desc1": "Produits 100% authentiques des meilleures marques mondiales",
+      "title2": "Conseil Expert",
+      "desc2": "Notre équipe vous guide vers les produits adaptés à vos besoins",
+      "title3": "Commande Facile",
+      "desc3": "Commandez en un clic via WhatsApp, réponse rapide garantie"
+    },
+    "featured": {
+      "title": "Nos Catégories",
+      "subtitle": "Explorez notre sélection de produits soigneusement choisis pour vous"
+    },
+    "products": {
+      "title": "Produits Vedettes",
+      "subtitle": "Les favoris de nos clientes",
+      "order_whatsapp": "Commander via WhatsApp",
+      "order_messenger": "Commander via Messenger",
+      "view_all": "Voir tous les produits",
+      "view_details": "Voir le détail",
+      "price": "Prix indicatif",
+      "category": "Catégorie",
+      "brand": "Marque",
+      "details": "Composition & Détails",
+      "similar": "Produits similaires",
+      "search": "Rechercher un produit...",
+      "all_categories": "Toutes les catégories",
+      "no_results": "Aucun produit trouvé",
+      "no_results_desc": "Essayez un autre terme de recherche ou une autre catégorie"
+    },
+    "testimonials": {
+      "title": "Elles nous font confiance",
+      "subtitle": "Découvrez les avis de nos clientes fidèles"
+    },
+    "about": {
+      "title": "Notre Histoire",
+      "subtitle": "Mawada Parapharmacie — Née de la passion pour le bien-être",
+      "story": "Fondée avec passion à Kasserine, Mawada Parapharmacie est bien plus qu'une boutique de santé et de beauté. C'est un espace de confiance où chaque cliente trouve les produits adaptés à ses besoins, accompagnés de conseils sincères et personnalisés.",
+      "story2": "Nous sélectionnons rigoureusement nos produits parmi les meilleures marques mondiales pour vous garantir authenticité et efficacité. Notre engagement : vous offrir une expérience de soin premium, accessible et humaine.",
+      "values_title": "Nos Valeurs",
+      "value1_title": "Soin",
+      "value1_desc": "Chaque produit est sélectionné avec soin, chaque conseil est donné avec bienveillance. Votre bien-être est notre priorité absolue.",
+      "value2_title": "Confiance",
+      "value2_desc": "100% de produits authentiques, zéro compromis sur la qualité. Vous pouvez faire confiance à chaque produit que nous proposons.",
+      "value3_title": "Féminité",
+      "value3_desc": "Nous célébrons la beauté de chaque femme dans sa singularité. Nos produits subliment votre beauté naturelle.",
+      "stats_title": "Mawada en chiffres",
+      "stat1": "5 300+",
+      "stat1Label": "Abonnées Facebook",
+      "stat2": "100+",
+      "stat2Label": "Produits référencés",
+      "stat3": "5",
+      "stat3Label": "Catégories de soin",
+      "stat4": "7j/7",
+      "stat4Label": "Ouvert tous les jours"
+    },
+    "contact": {
+      "title": "Contactez-Nous",
+      "subtitle": "Nous sommes disponibles tous les jours pour répondre à vos questions",
+      "address": "Cité Manar, AV Ali Bash Hambah, Kasserine, Tunisie 1200",
+      "phone": "+216 23 104 341",
+      "email": "mawadasalhi94@gmail.com",
+      "hours": "Ouvert tous les jours",
+      "form_name": "Votre nom",
+      "form_phone": "Votre téléphone",
+      "form_message": "Votre message",
+      "form_submit": "Envoyer via WhatsApp",
+      "social_title": "Suivez-nous",
+      "map_title": "Nous trouver"
+    },
+    "footer": {
+      "tagline": "Votre destination beauté & santé à Kasserine",
+      "links_title": "Liens rapides",
+      "contact_title": "Contact",
+      "social_title": "Réseaux sociaux",
+      "rights": "Tous droits réservés",
+      "made": "Fait avec ♥ à Kasserine"
+    },
+    "floating": {
+      "whatsapp_tooltip": "Commander via WhatsApp",
+      "messenger_tooltip": "Nous contacter sur Messenger"
+    }
+  },
+  "ar": {
+    "nav": {
+      "home": "الرئيسية",
+      "shop": "المتجر",
+      "about": "من نحن",
+      "contact": "اتصل بنا",
+      "order": "اطلب الآن"
+    },
+    "hero": {
+      "badge": "صيدلية متميزة في القصرين",
+      "title": "عناية.",
+      "title2": "ثقة.",
+      "title3": "أنوثة.",
+      "subtitle": "منتجات صحة وجمال أصلية من أفضل العلامات التجارية العالمية، مع نصائح متخصصة.",
+      "cta_shop": "اكتشف المتجر",
+      "cta_whatsapp": "اطلب عبر واتساب",
+      "stat1": "+5300",
+      "stat1Label": "زبونة وفية",
+      "stat2": "100%",
+      "stat2Label": "منتجات أصلية",
+      "stat3": "7/7",
+      "stat3Label": "مفتوح كل يوم"
+    },
+    "trust": {
+      "title1": "جودة مضمونة",
+      "desc1": "منتجات 100% أصلية من أفضل العلامات العالمية",
+      "title2": "نصيحة متخصصة",
+      "desc2": "فريقنا يرشدك لأفضل منتج يناسب احتياجاتك",
+      "title3": "طلب سهل",
+      "desc3": "اطلب بنقرة واحدة عبر واتساب، رد سريع مضمون"
+    },
+    "featured": {
+      "title": "تصنيفاتنا",
+      "subtitle": "اكتشف مجموعتنا المختارة بعناية من المنتجات"
+    },
+    "products": {
+      "title": "المنتجات المميزة",
+      "subtitle": "المفضلة لدى زبوناتنا",
+      "order_whatsapp": "اطلب عبر واتساب",
+      "order_messenger": "اطلب عبر ماسنجر",
+      "view_all": "عرض كل المنتجات",
+      "view_details": "عرض التفاصيل",
+      "price": "السعر التقريبي",
+      "category": "التصنيف",
+      "brand": "العلامة التجارية",
+      "details": "التركيبة والتفاصيل",
+      "similar": "منتجات مماثلة",
+      "search": "ابحث عن منتج...",
+      "all_categories": "جميع التصنيفات",
+      "no_results": "لم يتم العثور على منتجات",
+      "no_results_desc": "جرب كلمة بحث أخرى أو تصنيفاً آخر"
+    },
+    "testimonials": {
+      "title": "يثقن بنا",
+      "subtitle": "اقرأي آراء زبوناتنا الوفيات"
+    },
+    "about": {
+      "title": "قصتنا",
+      "subtitle": "مواده للصيدلانيات — ولدت من شغف العناية",
+      "story": "تأسست بشغف في القصرين، مواده للصيدلانيات أكثر من مجرد متجر للصحة والجمال. إنها فضاء من الثقة حيث تجد كل زبونة المنتجات المناسبة لاحتياجاتها، مصحوبة بنصائح صادقة وشخصية.",
+      "story2": "نختار منتجاتنا بعناية من أفضل العلامات العالمية لنضمن لك الأصالة والفعالية. التزامنا: تقديم تجربة عناية متميزة، في متناول الجميع.",
+      "values_title": "قيمنا",
+      "value1_title": "العناية",
+      "value1_desc": "كل منتج مختار بعناية، كل نصيحة تُقدَّم بمحبة. رفاهيتك هي أولويتنا القصوى.",
+      "value2_title": "الثقة",
+      "value2_desc": "100% منتجات أصلية، لا تنازل عن الجودة. يمكنك الوثوق بكل منتج نقدمه.",
+      "value3_title": "الأنوثة",
+      "value3_desc": "نحتفي بجمال كل امرأة في تميزها. منتجاتنا تبرز جمالك الطبيعي.",
+      "stats_title": "مواده بالأرقام",
+      "stat1": "+5300",
+      "stat1Label": "متابعة فيسبوك",
+      "stat2": "+100",
+      "stat2Label": "منتج متاح",
+      "stat3": "5",
+      "stat3Label": "تصنيفات عناية",
+      "stat4": "7/7",
+      "stat4Label": "مفتوح كل يوم"
+    },
+    "contact": {
+      "title": "اتصل بنا",
+      "subtitle": "نحن متاحون كل يوم للإجابة على أسئلتك",
+      "address": "حي المنار، ش علي باش حامبا، القصرين، تونس 1200",
+      "phone": "+216 23 104 341",
+      "email": "mawadasalhi94@gmail.com",
+      "hours": "مفتوح كل الأيام",
+      "form_name": "اسمك",
+      "form_phone": "رقم هاتفك",
+      "form_message": "رسالتك",
+      "form_submit": "إرسال عبر واتساب",
+      "social_title": "تابعنا",
+      "map_title": "موقعنا"
+    },
+    "footer": {
+      "tagline": "وجهتك للجمال والصحة في القصرين",
+      "links_title": "روابط سريعة",
+      "contact_title": "للتواصل",
+      "social_title": "شبكات التواصل",
+      "rights": "جميع الحقوق محفوظة",
+      "made": "صُنع بـ ♥ في القصرين"
+    },
+    "floating": {
+      "whatsapp_tooltip": "اطلب عبر واتساب",
+      "messenger_tooltip": "تواصل معنا على ماسنجر"
+    }
+  }
+}
