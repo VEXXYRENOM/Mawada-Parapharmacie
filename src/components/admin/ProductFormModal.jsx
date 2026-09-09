@@ -163,13 +163,14 @@ export default function ProductFormModal({ isOpen, onClose, editProduct, onSucce
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
           />
-          {/* Mobile: full-screen sheet from bottom | Desktop: centered modal */}
+          {/* Mobile: full-screen sheet | Desktop: centered modal */}
           <motion.div
-            className="fixed inset-0 z-50 flex items-end sm:items-start sm:justify-center sm:p-4 sm:pt-8 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center sm:p-4"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           >
             <motion.div
-              className="w-full sm:max-w-2xl bg-white sm:rounded-3xl rounded-t-3xl shadow-card sm:mb-6"
+              className="w-full sm:max-w-2xl bg-white sm:rounded-3xl rounded-t-3xl shadow-card flex flex-col"
+              style={{ maxHeight: '92dvh' }}
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 34 }}
               onClick={e => e.stopPropagation()}
@@ -189,7 +190,9 @@ export default function ProductFormModal({ isOpen, onClose, editProduct, onSucce
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-5 space-y-5 pb-safe">
+              <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+                {/* Scrollable body */}
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-5">
                 {/* Image Upload */}
                 <div>
                   <label className="block text-sm font-medium font-sans text-charcoal mb-2">Image du produit</label>
@@ -473,9 +476,10 @@ export default function ProductFormModal({ isOpen, onClose, editProduct, onSucce
                     </button>
                   </div>
                 </div>
+                </div>{/* end scrollable body */}
 
-                {/* Submit */}
-                <div className="flex gap-3 pt-2 pb-2">
+                {/* Submit — sticky at bottom, always visible */}
+                <div className="flex gap-3 px-4 sm:px-6 py-4 border-t border-rose-100 bg-white">
                   <button
                     type="button"
                     onClick={onClose}
