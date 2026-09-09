@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PhoneNumber, { PhoneLink } from '../components/ui/PhoneNumber'
 import { MapPin, Phone, Mail, Clock, ExternalLink } from 'lucide-react'
 
 const FacebookIcon = ({ size = 18 }) => (
@@ -89,7 +90,7 @@ export default function ContactPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className={`grid grid-cols-1 lg:grid-cols-2 gap-12 ${isRTL ? 'lg:flex lg:flex-row-reverse' : ''}`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
           {/* Contact info + Map */}
           <div className={isRTL ? 'text-right' : ''}>
@@ -117,6 +118,7 @@ export default function ContactPage() {
                           target={href.startsWith('http') ? '_blank' : undefined}
                           rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                           className="text-sm font-sans text-charcoal hover:text-rose-500 transition-colors leading-snug"
+                          {...(labelKey === 'phone' ? { dir: 'ltr', style: { unicodeBidi: 'plaintext', display: 'inline-block' } } : {})}
                         >
                           {tc[labelKey]}
                         </a>
@@ -207,8 +209,10 @@ export default function ContactPage() {
                     type="tel"
                     value={form.phone}
                     onChange={handleChange('phone')}
-                    placeholder={lang === 'fr' ? 'Ex: +216 XX XXX XXX' : 'مثال: +216 XX XXX XXX'}
-                    className={`w-full h-12 px-4 bg-ivory border rounded-xl font-sans text-sm text-charcoal placeholder:text-warm-gray/70 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all ${errors.phone ? 'border-red-400' : 'border-rose-100'} ${isRTL ? 'text-right' : ''}`}
+                    placeholder="+216 XX XXX XXX"
+                    dir="ltr"
+                    style={{ unicodeBidi: 'plaintext' }}
+                    className={`w-full h-12 px-4 bg-ivory border rounded-xl font-sans text-sm text-charcoal placeholder:text-warm-gray/70 focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all ${errors.phone ? 'border-red-400' : 'border-rose-100'}`}
                     aria-describedby={errors.phone ? 'phone-error' : undefined}
                   />
                   {errors.phone && <p id="phone-error" className={`mt-1 text-xs text-red-500 font-sans ${isRTL ? 'text-right' : ''}`}>{errors.phone}</p>}

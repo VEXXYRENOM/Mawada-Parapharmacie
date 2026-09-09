@@ -1,13 +1,33 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext'
 import { FadeIn, StaggerContainer, StaggerItem } from '../ui/Animations'
 import ProductCard from '../ui/ProductCard'
-import data from '../../data/products.json'
+import { getPublicProducts } from '../../lib/queries'
 
 export default function FeaturedProducts() {
-  const { t, isRTL } = useLanguage()
-  const featured = data.products.filter(p => p.badge).slice(0, 4)
+  const { t, isRTL, lang } = useLanguage()
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getPublicProducts().then(data => {
+      // Afficher uniquement les produits avec un badge (comme avant)
+      const withBadge = data.filter(p => p.badge && p.badge.trim()).slice(0, 4)
+      setProducts(withBadge)
+      setLoading(false)
+    })
+  }, [])
+
+  const normalize = (p) => ({
+    ...p,
+    name:         lang === 'ar' ? (p.name_ar || p.name_fr) : p.name_fr,
+    nameAr:       p.name_ar,
+    description:  lang === 'ar' ? (p.description_ar || p.description_fr) : p.description_fr,
+    image:        p.image_url,
+    whatsappText: `${p.name_fr} (${p.price?.toFixed(2)} TND)`,
+  })
 
   return (
     <section className="py-20 bg-ivory" aria-labelledby="featured-products-title">
@@ -32,14 +52,32 @@ export default function FeaturedProducts() {
           </Link>
         </FadeIn>
 
+        {/* Skeleton loading */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-2xl bg-white border border-rose-50 overflow-hidden animate-pulse">
+                <div className="h-52 bg-rose-50" />
+                <div className="p-4 space-y-3">
+                  <div className="h-3 bg-rose-50 rounded-full w-2/3" />
+                  <div className="h-4 bg-rose-50 rounded-full w-full" />
+                  <div className="h-3 bg-rose-50 rounded-full w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Products grid */}
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.08}>
-          {featured.map(product => (
-            <StaggerItem key={product.id}>
-              <ProductCard product={product} />
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        {!loading && (
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.08}>
+            {products.map(product => (
+              <StaggerItem key={product.id}>
+                <ProductCard product={normalize(product)} />
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        )}
       </div>
     </section>
   )

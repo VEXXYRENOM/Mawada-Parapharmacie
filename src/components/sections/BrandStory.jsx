@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext'
+import { useSiteContent } from '../../hooks/useSiteContent'
 import { FadeIn } from '../ui/Animations'
 import heroImg from '../../assets/hero_products.jpg'
 
 export default function BrandStory() {
   const { t, lang, isRTL } = useLanguage()
+  const { getContent } = useSiteContent(lang)
 
   return (
     <section className="py-20 bg-white overflow-hidden" aria-labelledby="brand-story-title">
@@ -50,10 +52,10 @@ export default function BrandStory() {
               {t.about.subtitle}
             </h2>
             <p className="text-base text-charcoal-light font-sans leading-relaxed mb-4">
-              {t.about.story}
+              {getContent('about_story', t.about.story)}
             </p>
             <p className="text-base text-charcoal-light font-sans leading-relaxed mb-8">
-              {t.about.story2}
+              {getContent('about_story2', t.about.story2)}
             </p>
 
             {/* Values mini */}

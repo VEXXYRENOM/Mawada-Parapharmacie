@@ -3,11 +3,13 @@ import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Star, ShoppingBag } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext'
+import { useSiteContent } from '../../hooks/useSiteContent'
 import heroImg from '../../assets/hero_products.jpg'
 import logoImg from '../../assets/logo.jpg'
 
 export default function HeroSection() {
-  const { t, isRTL } = useLanguage()
+  const { t, lang, isRTL } = useLanguage()
+  const { getContent } = useSiteContent(lang)
   const containerRef = useRef(null)
 
   const { scrollYProgress } = useScroll({
@@ -71,14 +73,14 @@ export default function HeroSection() {
 
           {/* Title */}
           <motion.h1 variants={itemVariants} className="font-serif text-5xl sm:text-6xl lg:text-7xl text-charcoal leading-none mb-2">
-            <span className="block">{t.hero.title}</span>
-            <span className="block text-sage-600">{t.hero.title2}</span>
-            <span className="block text-gold-gradient">{t.hero.title3}</span>
+            <span className="block">{getContent('hero_title', t.hero.title)}</span>
+            <span className="block text-sage-600">{getContent('hero_title2', t.hero.title2)}</span>
+            <span className="block text-gold-gradient">{getContent('hero_title3', t.hero.title3)}</span>
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p variants={itemVariants} className="mt-6 text-base sm:text-lg text-charcoal-light leading-relaxed max-w-md font-sans">
-            {t.hero.subtitle}
+            {getContent('hero_subtitle', t.hero.subtitle)}
           </motion.p>
 
           {/* CTA Buttons */}
