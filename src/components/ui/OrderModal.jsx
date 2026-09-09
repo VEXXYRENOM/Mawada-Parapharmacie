@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, Phone, User, MessageSquare, ShoppingBag, Loader2 } from 'lucide-react'
+import { X, Phone, User, MessageSquare, ShoppingBag, Loader2, MapPin } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createOrder } from '../../lib/queries'
 
@@ -14,7 +14,7 @@ import { createOrder } from '../../lib/queries'
  */
 export default function OrderModal({ isOpen, onClose, product, whatsappUrl, lang }) {
   const isRTL = lang === 'ar'
-  const [form, setForm] = useState({ name: '', phone: '', message: '' })
+  const [form, setForm] = useState({ name: '', phone: '', address: '', message: '' })
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState('form') // 'form' | 'success'
 
@@ -22,7 +22,7 @@ export default function OrderModal({ isOpen, onClose, product, whatsappUrl, lang
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.phone.trim()) return
+    if (!form.phone.trim() || !form.address.trim()) return
 
     setLoading(true)
 
@@ -32,7 +32,7 @@ export default function OrderModal({ isOpen, onClose, product, whatsappUrl, lang
       product_name:   product?.name_fr ?? null,
       customer_name:  form.name.trim() || null,
       customer_phone: form.phone.trim(),
-      message:        form.message.trim() || null,
+      message:        (form.address ? `Adresse: ${form.address}\n` : '') + (form.message.trim() || ''),
     })
 
     setLoading(false)
@@ -43,7 +43,7 @@ export default function OrderModal({ isOpen, onClose, product, whatsappUrl, lang
   }
 
   const handleClose = () => {
-    setForm({ name: '', phone: '', message: '' })
+    setForm({ name: '', phone: '', address: '', message: '' })
     setStep('form')
     onClose()
   }
@@ -144,6 +144,19 @@ export default function OrderModal({ isOpen, onClose, product, whatsappUrl, lang
                       />
                     </div>
 
+                    {/* Adresse */}
+                    <div className="relative">
+                      <MapPin size={15} className={`absolute top-1/2 -translate-y-1/2 text-warm-gray ${isRTL ? 'right-4' : 'left-4'}`} aria-hidden="true" />
+                      <input
+                        type="text"
+                        value={form.address}
+                        onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                        placeholder={lang === 'fr' ? 'Adresse de livraison *' : 'عنوان التوصيل *'}
+                        required
+                        className={`w-full h-11 border border-rose-100 rounded-full font-sans text-sm text-charcoal placeholder:text-warm-gray focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all bg-rose-50/30 ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
+                      />
+                    </div>
+
                     {/* Message */}
                     <div className="relative">
                       <MessageSquare size={15} className={`absolute top-3 text-warm-gray ${isRTL ? 'right-4' : 'left-4'}`} aria-hidden="true" />
@@ -159,7 +172,7 @@ export default function OrderModal({ isOpen, onClose, product, whatsappUrl, lang
                     {/* Submit */}
                     <button
                       type="submit"
-                      disabled={loading || !form.phone.trim()}
+                      disabled={loading || !form.phone.trim() || !form.address.trim()}
                       className="w-full flex items-center justify-center gap-2.5 h-12 rounded-full bg-[#25D366] text-white text-sm font-medium font-sans hover:bg-[#1ebe5d] transition-all duration-300 shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {loading ? (

@@ -13,11 +13,13 @@ create table if not exists products (
   name_ar     text,
   brand       text not null default '',
   price       numeric(10,2) not null default 0,
+  original_price float8,               -- ancien prix (barré en rouge si > price)
   description_fr text,
   description_ar text,
   badge       text,
   image_url   text,
   is_active   boolean not null default true,
+  in_stock    boolean not null default true,
   created_at  timestamptz not null default now()
 );
 
@@ -33,6 +35,8 @@ create table if not exists orders (
   message         text,
   status          text not null default 'nouveau'
                   check (status in ('nouveau', 'traité', 'annulé')),
+  total_price     numeric(10,2),
+  cart_items      jsonb,
   created_at      timestamptz not null default now()
 );
 
@@ -70,8 +74,24 @@ insert into site_content (key, value_fr, value_ar) values
   ('testimonial_4_name',  'Hana Saidi', 'هناء سعيدي'),
   ('testimonial_5_text',  'Le highlighter Aurora est mon coup de cœur depuis des mois. Jamais trouvé ça ailleurs à Kasserine. Mawada Parapharmacie est mon adresse beauté préférée !',
                            'هايلايتر أورورا أفضل ما لديّ منذ أشهر. لم أجده في مكان آخر بالقصرين. مواده هي عنواني للجمال!'),
-  ('testimonial_5_name',  'Rania Hamdi', 'رانيا حمدي')
+  ('testimonial_5_name',  'Rania Hamdi', 'رانيا حمدي'),
+  ('whatsapp_number',     '21623104341', ''),
+  ('facebook_url',        'https://www.facebook.com/profile.php?id=100063516752985', ''),
+  ('messenger_url',       'https://m.me/MawadaParapharmacie', ''),
+  ('pixel_id',            '', '')
 on conflict (key) do nothing;
+
+-- ─────────────────────────────────────────
+-- 5. Table PRODUCT_REQUESTS (Demandes de produits)
+-- ─────────────────────────────────────────
+create table if not exists product_requests (
+  id              uuid primary key default gen_random_uuid(),
+  customer_name   text not null,
+  customer_contact text not null,
+  product_name    text not null,
+  status          text not null default 'nouveau' check (status in ('nouveau', 'contacté')),
+  created_at      timestamptz not null default now()
+);
 
 -- ============================================================
 -- ROW LEVEL SECURITY (RLS)
@@ -81,6 +101,7 @@ on conflict (key) do nothing;
 alter table products    enable row level security;
 alter table orders      enable row level security;
 alter table site_content enable row level security;
+alter table product_requests enable row level security;
 
 -- ─────────────────────────────────────────
 -- RLS : PRODUCTS
@@ -139,6 +160,31 @@ create policy "orders_auth_delete"
   using (true);
 
 -- ─────────────────────────────────────────
+-- RLS : PRODUCT_REQUESTS
+-- ─────────────────────────────────────────
+-- Écriture publique : n'importe qui peut soumettre une demande
+create policy "product_requests_public_insert"
+  on product_requests for insert
+  to anon
+  with check (true);
+
+-- Lecture + gestion réservées à l'admin
+create policy "product_requests_auth_select"
+  on product_requests for select
+  to authenticated
+  using (true);
+
+create policy "product_requests_auth_update"
+  on product_requests for update
+  to authenticated
+  using (true);
+
+create policy "product_requests_auth_delete"
+  on product_requests for delete
+  to authenticated
+  using (true);
+
+-- ─────────────────────────────────────────
 -- RLS : SITE_CONTENT
 -- ─────────────────────────────────────────
 -- Lecture publique pour tous les textes du site
@@ -188,3 +234,46 @@ create policy "storage_auth_delete"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'product-images');
+
+-- ─────────────────────────────────────────
+-- 4. Table PROMO_CODES
+-- ─────────────────────────────────────────
+create table if not exists promo_codes (
+  id             uuid        default gen_random_uuid() primary key,
+  code           text        unique not null,
+  discount_type  text        not null default 'percentage',  -- 'percentage' | 'fixed'
+  discount_value numeric(10,2) not null default 0,
+  expires_at     timestamptz,           -- null = pas d'expiration
+  max_uses       int,                   -- null = illimité
+  current_uses   int         not null default 0,
+  is_active      boolean     not null default true,
+  created_at     timestamptz default now()
+);
+
+create index if not exists promo_codes_code_idx on promo_codes (code);
+
+-- RLS : PROMO_CODES
+alter table promo_codes enable row level security;
+
+-- Lecture publique pour valider un code (site public)
+create policy "promo_codes_public_read"
+  on promo_codes for select
+  to anon
+  using (is_active = true);
+
+-- CRUD complet pour l'admin
+create policy "promo_codes_auth_all"
+  on promo_codes for all
+  to authenticated
+  using (true)
+  with check (true);
+
+-- ─────────────────────────────────────────
+-- MIGRATION : à exécuter si la base existe déjà
+-- (ajoute original_price et in_stock si la table products est créée sans elle)
+-- ─────────────────────────────────────────
+alter table products
+  add column if not exists original_price float8;
+
+alter table products
+  add column if not exists in_stock boolean not null default true;

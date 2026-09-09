@@ -255,47 +255,47 @@
   ],
   "categories": [
     {
-      "id": "complements-enfants",
-      "name": "Compléments Enfants",
-      "nameAr": "مكملات الأطفال",
-      "icon": "baby",
-      "color": "#E8C5C1",
-      "image": "/assets/kinder_health.jpg",
-      "description": "Vitamines et compléments pour la santé de vos enfants",
-      "descriptionAr": "فيتامينات ومكملات لصحة أطفالكم"
-    },
-    {
-      "id": "soins-visage",
-      "name": "Soins Visage",
-      "nameAr": "العناية بالوجه",
+      "id": "Skin care",
+      "name": "Skin care",
+      "nameAr": "العناية بالبشرة",
       "icon": "sparkles",
       "color": "#F5C9C3",
       "image": "/assets/skincare_face.jpg",
-      "description": "Sérums, crèmes et soins pour un teint parfait",
-      "descriptionAr": "سيرومات وكريمات لبشرة مثالية"
+      "description": "Sérums, crèmes et soins pour un teint radieux",
+      "descriptionAr": "سيرومات وكريمات لبشرة مشرقة"
     },
     {
-      "id": "soins-corps",
-      "name": "Soins Corps",
-      "nameAr": "العناية بالجسم",
-      "icon": "heart",
-      "color": "#E2C27D",
+      "id": "Hair care",
+      "name": "Hair care",
+      "nameAr": "العناية بالشعر",
+      "icon": "wind",
+      "color": "#C4747A",
       "image": "/assets/body_care.jpg",
-      "description": "Beurres, huiles et gommages pour une peau soyeuse",
-      "descriptionAr": "زبدة وزيوت ومقشرات لبشرة ناعمة"
+      "description": "Shampoings, masques et soins capillaires premium",
+      "descriptionAr": "شامبو وأقنعة وعلاجات الشعر الفاخرة"
     },
     {
-      "id": "cosmetique",
+      "id": "Complément Alimentaire",
+      "name": "Complément Alimentaire",
+      "nameAr": "المكملات الغذائية",
+      "icon": "pill",
+      "color": "#E8C5C1",
+      "image": "/assets/kinder_health.jpg",
+      "description": "Vitamines, minéraux et compléments santé",
+      "descriptionAr": "فيتامينات ومعادن ومكملات صحية"
+    },
+    {
+      "id": "Cosmétique",
       "name": "Cosmétique",
       "nameAr": "مستحضرات التجميل",
       "icon": "palette",
-      "color": "#C4747A",
+      "color": "#E2C27D",
       "image": "/assets/cosmetics.jpg",
       "description": "Maquillage premium pour sublimer votre beauté",
       "descriptionAr": "مكياج فاخر لإبراز جمالك"
     },
     {
-      "id": "bebe",
+      "id": "Bébé",
       "name": "Bébé",
       "nameAr": "منتجات الطفل",
       "icon": "baby",

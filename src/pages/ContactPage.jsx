@@ -9,8 +9,9 @@ const FacebookIcon = ({ size = 18 }) => (
 )
 import { Helmet } from 'react-helmet-async'
 import { useLanguage } from '../context/LanguageContext'
+import { useSettings } from '../context/SettingsContext'
 import { PageTransition, FadeIn, StaggerContainer, StaggerItem } from '../components/ui/Animations'
-import { buildWhatsAppContactUrl, FACEBOOK_PAGE } from '../utils/whatsapp'
+import { buildWhatsAppContactUrl } from '../utils/whatsapp'
 
 const CONTACT_ITEMS = [
   {
@@ -45,6 +46,7 @@ const CONTACT_ITEMS = [
 
 export default function ContactPage() {
   const { t, lang, isRTL } = useLanguage()
+  const { settings } = useSettings()
   const tc = t.contact
 
   const [form, setForm] = useState({ name: '', phone: '', message: '' })
@@ -62,7 +64,7 @@ export default function ContactPage() {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
-    const url = buildWhatsAppContactUrl(form.name, form.phone, form.message, lang)
+    const url = buildWhatsAppContactUrl(form.name, form.phone, form.message, settings.whatsappNumber, lang)
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
@@ -135,7 +137,7 @@ export default function ContactPage() {
             <FadeIn delay={0.3}>
               <h3 className="font-serif text-base font-semibold text-charcoal mb-4">{tc.social_title}</h3>
               <a
-                href={FACEBOOK_PAGE}
+                href={settings.facebookUrl || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#1877F2] text-white text-sm font-medium font-sans hover:bg-[#1463cc] transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}

@@ -13,11 +13,12 @@ const InstagramIcon = ({ size = 16, ...props }) => (
   </svg>
 )
 import { useLanguage } from '../../context/LanguageContext'
-import { FACEBOOK_PAGE } from '../../utils/whatsapp'
+import { useSettings } from '../../context/SettingsContext'
 import logoImg from '../../assets/logo.jpg'
 
 export default function Footer() {
   const { t } = useLanguage()
+  const { settings } = useSettings()
   const year = new Date().getFullYear()
 
   return (
@@ -46,7 +47,7 @@ export default function Footer() {
             <p className="text-sm text-white/60 leading-relaxed mb-5">{t.footer.tagline}</p>
             <div className="flex items-center gap-3">
               <a
-                href={FACEBOOK_PAGE}
+                href={settings.facebookUrl || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-rose-500 transition-colors duration-300"
@@ -98,7 +99,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={15} className="text-rose-400 shrink-0" />
-                <a href="tel:+21623104341" className="text-sm text-white/60 hover:text-rose-300 transition-colors">{t.contact.phone}</a>
+                <a href={`tel:+${settings.whatsappNumber}`} className="text-sm text-white/60 hover:text-rose-300 transition-colors">{settings.whatsappNumber ? `+${settings.whatsappNumber.slice(0,3)} ${settings.whatsappNumber.slice(3,5)} ${settings.whatsappNumber.slice(5,8)} ${settings.whatsappNumber.slice(8)}` : t.contact.phone}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={15} className="text-rose-400 shrink-0" />
@@ -115,7 +116,7 @@ export default function Footer() {
           <div>
             <h3 className="font-serif text-sm text-rose-300 uppercase tracking-widest mb-5">{t.footer.social_title}</h3>
             <a
-              href={FACEBOOK_PAGE}
+              href={settings.facebookUrl || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3.5 rounded-xl bg-white/8 hover:bg-white/15 transition-all duration-300 group mb-3"
@@ -129,7 +130,7 @@ export default function Footer() {
               </div>
             </a>
             <a
-              href={`https://wa.me/21623104341`}
+              href={`https://wa.me/${settings.whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3.5 rounded-xl bg-white/8 hover:bg-white/15 transition-all duration-300 group"
@@ -141,7 +142,7 @@ export default function Footer() {
               </div>
               <div>
                 <p className="text-sm font-medium text-white group-hover:text-rose-300 transition-colors">WhatsApp</p>
-                <p className="text-xs text-white/50">+216 23 104 341</p>
+                <p className="text-xs text-white/50">{settings.whatsappNumber ? `+${settings.whatsappNumber}` : '+216 23 104 341'}</p>
               </div>
             </a>
           </div>

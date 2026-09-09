@@ -6,15 +6,23 @@ import { Helmet } from 'react-helmet-async'
 import { useLanguage } from '../context/LanguageContext'
 import { PageTransition, FadeIn, StaggerContainer, StaggerItem } from '../components/ui/Animations'
 import ProductCard from '../components/ui/ProductCard'
+import ProductRequestModal from '../components/ui/ProductRequestModal'
 import { getPublicProducts } from '../lib/queries'
 
-// Catégories statiques (labels) — les IDs viennent des produits Supabase
+// Catégories réelles du magasin — l'ID correspond EXACTEMENT au label FR (mapping Excel direct)
 const CATEGORY_LABELS = {
-  'complements-enfants': { fr: 'Compléments Enfants', ar: 'مكملات الأطفال' },
-  'soins-visage':        { fr: 'Soins Visage',        ar: 'العناية بالوجه' },
-  'soins-corps':         { fr: 'Soins Corps',         ar: 'العناية بالجسم' },
-  'cosmetique':          { fr: 'Cosmétique',          ar: 'مستحضرات التجميل' },
-  'bebe':                { fr: 'Bébé',                ar: 'منتجات الطفل' },
+  'Hair care':              { fr: 'Hair care',              ar: 'العناية بالشعر' },
+  'Complément Alimentaire': { fr: 'Complément Alimentaire', ar: 'المكملات الغذائية' },
+  'Nature & Bio':           { fr: 'Nature & Bio',           ar: 'طبيعي وعضوي' },
+  'Skin care':              { fr: 'Skin care',              ar: 'العناية بالبشرة' },
+  'Body care':              { fr: 'Body care',              ar: 'العناية بالجسم' },
+  'Soin':                   { fr: 'Soin',                   ar: 'عناية' },
+  'Cosmétique':             { fr: 'Cosmétique',             ar: 'مستحضرات التجميل' },
+  'Beauty':                 { fr: 'Beauty',                 ar: 'الجمال' },
+  'Bébé':                   { fr: 'Bébé',                   ar: 'منتجات الطفل' },
+  'Dentaire':               { fr: 'Dentaire',               ar: 'العناية بالأسنان' },
+  'Orthopédie':             { fr: 'Orthopédie',             ar: 'العظام والمفاصل' },
+  'Santé':                  { fr: 'Santé',                  ar: 'الصحة' },
 }
 
 export default function ShopPage() {
@@ -26,6 +34,8 @@ export default function ShopPage() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [visibleCount, setVisibleCount] = useState(12)
+  const [requestModalOpen, setRequestModalOpen] = useState(false)
 
   useEffect(() => {
     const cat = searchParams.get('category')
@@ -68,6 +78,15 @@ export default function ShopPage() {
       return matchCat && matchSearch
     })
   }, [products, activeCategory, search])
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setVisibleCount(12)
+  }, [search, activeCategory])
+
+  const visibleProducts = useMemo(() => {
+    return filtered.slice(0, visibleCount)
+  }, [filtered, visibleCount])
 
   // Catégories dynamiques déduites des produits
   const categories = useMemo(() => {
@@ -240,19 +259,32 @@ export default function ShopPage() {
         )}
 
         {/* Products Grid */}
-        {!loading && filtered.length > 0 && (
-          <StaggerContainer
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-            staggerDelay={0.05}
-          >
-            <AnimatePresence mode="popLayout">
-              {filtered.map(product => (
-                <StaggerItem key={product.id}>
-                  <ProductCard product={normalizeProduct(product)} />
-                </StaggerItem>
-              ))}
-            </AnimatePresence>
-          </StaggerContainer>
+        {!loading && visibleProducts.length > 0 && (
+          <>
+            <StaggerContainer
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              staggerDelay={0.05}
+            >
+              <AnimatePresence mode="popLayout">
+                {visibleProducts.map(product => (
+                  <StaggerItem key={product.id}>
+                    <ProductCard product={normalizeProduct(product)} />
+                  </StaggerItem>
+                ))}
+              </AnimatePresence>
+            </StaggerContainer>
+
+            {visibleCount < filtered.length && (
+              <div className="mt-12 flex justify-center">
+                <button
+                  onClick={() => setVisibleCount(v => v + 12)}
+                  className="px-8 py-3 rounded-full bg-white border border-rose-200 text-charcoal font-medium font-sans hover:border-rose-300 hover:bg-rose-50 transition-all duration-300 shadow-sm flex items-center gap-2"
+                >
+                  {lang === 'fr' ? 'Charger plus de produits' : 'تحميل المزيد من المنتجات'}
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         {/* Empty state */}
@@ -263,15 +295,29 @@ export default function ShopPage() {
             </div>
             <h3 className="font-serif text-xl text-charcoal mb-2">{t.products.no_results}</h3>
             <p className="text-sm text-warm-gray font-sans">{t.products.no_results_desc}</p>
-            <button
-              onClick={() => { setSearch(''); setActiveCategory('all') }}
-              className="mt-5 px-6 py-2.5 rounded-full bg-sage-600 text-white text-sm font-medium font-sans hover:bg-sage-700 transition-colors"
-            >
-              {lang === 'fr' ? 'Réinitialiser les filtres' : 'إعادة تعيين الفلاتر'}
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+              <button
+                onClick={() => { setSearch(''); setActiveCategory('all') }}
+                className="px-6 py-2.5 rounded-full bg-sage-600 text-white text-sm font-medium font-sans hover:bg-sage-700 transition-colors w-full sm:w-auto"
+              >
+                {lang === 'fr' ? 'Réinitialiser les filtres' : 'إعادة تعيين الفلاتر'}
+              </button>
+              <button
+                onClick={() => setRequestModalOpen(true)}
+                className="px-6 py-2.5 rounded-full bg-white border border-rose-200 text-charcoal text-sm font-medium font-sans hover:bg-rose-50 hover:border-rose-300 transition-colors w-full sm:w-auto"
+              >
+                {lang === 'fr' ? 'Demander le produit' : 'اطلب هذا المنتج'}
+              </button>
+            </div>
           </FadeIn>
         )}
       </div>
+
+      <ProductRequestModal 
+        isOpen={requestModalOpen} 
+        onClose={() => setRequestModalOpen(false)} 
+        initialProductName={search}
+      />
     </PageTransition>
   )
 }

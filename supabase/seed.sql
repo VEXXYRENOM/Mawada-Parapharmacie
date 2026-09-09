@@ -1,0 +1,35 @@
+-- ============================================================
+-- Seed data: 18 produits de démonstration (catégories réelles)
+-- À exécuter dans: Supabase Dashboard > SQL Editor > New query
+-- ⚠️  N'exécutez qu'UNE SEULE FOIS si la table est vide
+-- ============================================================
+
+INSERT INTO products (category, name_fr, name_ar, brand, price, description_fr, description_ar, badge, image_url, is_active)
+VALUES
+  -- Complément Alimentaire (anciennement "complements-enfants")
+  ('Complément Alimentaire', 'Kinder Health Vitalité', 'كيندر هيلث فيتاليتي', 'Kinder Health', 32.5, 'Formule complète en vitamines, minéraux et antioxydants spécialement conçue pour les enfants de 3 à 12 ans. Renforce les défenses naturelles et apporte l''énergie nécessaire à leur développement.', 'تركيبة متكاملة من الفيتامينات والمعادن ومضادات الأكسدة مصممة خصيصاً للأطفال من 3 إلى 12 سنة.', 'Bestseller', '/assets/kinder_health.jpg', true),
+  ('Complément Alimentaire', 'Kinder Health Croissance', 'كيندر هيلث النمو', 'Kinder Health', 38, 'Complément alimentaire Growth dédié à la croissance harmonieuse de l''enfant. Riche en calcium, vitamine D3 et lysine pour soutenir l''ossification et le développement musculaire.', 'مكمل غذائي مخصص لنمو الطفل. غني بالكالسيوم وفيتامين D3 للعظام والعضلات.', 'Nouveauté', '/assets/kinder_health.jpg', true),
+  ('Complément Alimentaire', 'Kinder Health Fer', 'كيندر هيلث الحديد', 'Kinder Health', 28.5, 'Solution pédiatrique contre la carence en fer. Formule liquide douce, facilement assimilable, enrichie en vitamine C pour optimiser l''absorption du fer. Recommandée par les pédiatres.', 'محلول طب الأطفال لعلاج نقص الحديد. تركيبة سائلة لطيفة.', NULL, '/assets/kinder_health.jpg', true),
+  ('Complément Alimentaire', 'Kinder Health Focus', 'كيندر هيلث فوكس', 'Kinder Health', 35, 'Spécialement formulé pour la rentrée scolaire. Favorise la concentration, la mémoire et la résistance au stress chez l''enfant grâce à l''oméga 3, la choline et le magnésium marin.', 'مصمم خصيصاً للموسم الدراسي. يعزز التركيز والذاكرة.', 'Rentrée', '/assets/kinder_health.jpg', true),
+
+  -- Skin care (anciennement "soins-visage")
+  ('Skin care', 'Sérum Éclat Vitamine C', 'سيروم بريق فيتامين سي', 'Lumière Botanicals', 65, 'Sérum concentré à 15% de vitamine C stabilisée pour un teint lumineux et unifié. Réduit visiblement les taches et imperfections en 4 semaines d''utilisation régulière.', 'سيروم مركّز بـ 15% فيتامين سي لبشرة مشرقة وموحدة اللون.', 'Premium', '/assets/skincare_face.jpg', true),
+  ('Skin care', 'Crème Hydratante Luxe', 'كريم مرطب فاخر', 'Aurélia', 72, 'Crème de jour riche et veloutée qui restaure le film hydrolipidique de la peau. Formule anti-âge avec peptides de soie et acide hyaluronique tri-phasé pour une peau repulpée.', 'كريم نهاري غني يرطب ويجدد البشرة. مضاد للشيخوخة.', 'Bestseller', '/assets/skincare_face.jpg', true),
+  ('Skin care', 'Contour des Yeux Refresh', 'كريم محيط العين', 'Éclat', 48, 'Soin intensif pour la zone péri-oculaire. Réduit poches, cernes et ridules grâce à la caféine, aux peptides et à la vitamine K. Applicateur froid en acier inoxydable inclus.', 'علاج مكثف لمنطقة العين. يقلل الانتفاخ والهالات.', NULL, '/assets/skincare_face.jpg', true),
+  ('Skin care', 'Tonique Hydra Flow', 'تونيك هيدرا فلو', 'Hydra Flow', 42, 'Lotion tonique à l''acide hyaluronique pur pour hydrater, équilibrer et préparer la peau à absorber les soins suivants. Sans alcool, convient aux peaux sensibles.', 'لوشن تونيك بحمض الهيالورونيك النقي. مناسب للبشرة الحساسة.', 'Nouveauté', '/assets/skincare_face.jpg', true),
+
+  -- Body care (anciennement "soins-corps")
+  ('Body care', 'Beurre Corporel Nourrissant', 'زبدة الجسم المغذية', 'Au Naturel', 44, 'Beurre corporel fondant à base de karité et de rose. Nourrit intensément les peaux sèches et très sèches. Texture onctueuse qui pénètre sans laisser de film gras.', 'زبدة الجسم بزبدة الشيا والورد. تغذية مكثفة للبشرة الجافة.', 'Naturel', '/assets/body_care.jpg', true),
+  ('Body care', 'Gommage Sel & Rose', 'مقشر الملح والورد', 'Au Naturel', 38, 'Gommage corps aux cristaux de sel de l''Himalaya et à l''huile de rose. Élimine les cellules mortes et laisse la peau satinée et parfumée. Formule enrichie en huile d''argan.', 'مقشر للجسم بملح الهيمالايا وزيت الورد.', NULL, '/assets/body_care.jpg', true),
+  ('Body care', 'Huile Corps Dorée', 'زيت الجسم الذهبي', 'Au Naturel', 55, 'Huile sèche multi-usage aux paillettes dorées subtiles. Mélange d''huiles nobles (jojoba, rosier muscat, argan) qui illumine et satiné la peau tout en la nourrissant en profondeur.', 'زيت جسم متعدد الاستخدامات بلمعة ذهبية خفيفة.', 'Premium', '/assets/body_care.jpg', true),
+
+  -- Cosmétique
+  ('Cosmétique', 'Palette Bloom Rose Gold', 'باليت بلوم روز غولد', 'Bloom', 89, 'Palette de 18 fards à paupières aux teintes roses et dorées. Textures ultra-pigmentées : mates, satinées et métalliques. Longue tenue 12h. Packaging luxueux en rose gold.', 'باليت 18 ظل عيون بدرجات الوردي والذهبي.', 'Exclusif', '/assets/cosmetics.jpg', true),
+  ('Cosmétique', 'Rouge à Lèvres Velvet', 'أحمر شفاه مخملي', 'Bloom', 35, 'Rouge à lèvres mat à texture velours. Formule hydratante enrichie en huile de rose et beurre de mangue. Couleur intense et longue tenue. Disponible en 12 teintes.', 'أحمر شفاه مطفي بتركيبة مرطبة.', NULL, '/assets/cosmetics.jpg', true),
+  ('Cosmétique', 'Highlighter Aurora Glow', 'هايلايتر أورورا', 'Aurora', 52, 'Poudre illuminatrice à reflets champagne et pêche. Texture soyeuse qui fond sur la peau pour un éclat naturel et lumineux. Formule enrichie en huile de macadamia.', 'بودرة مضيئة بانعكاسات الشمبانيا والخوخ.', 'Bestseller', '/assets/cosmetics.jpg', true),
+
+  -- Bébé
+  ('Bébé', 'Lotion Bébé Douce', 'لوشن الطفل اللطيف', 'PureBloom Baby', 28, 'Lotion corporelle ultra-douce pour la peau délicate des bébés. Formule hypoallergénique à l''avoine et à la camomille. Hydrate et protège sans laisser de film gras.', 'لوشن للجسم لطيف جداً لبشرة الرضع الحساسة.', 'Doux', '/assets/baby_products.jpg', true),
+  ('Bébé', 'Shampooing Bébé Sans Larmes', 'شامبو الطفل بدون دموع', 'PureBloom Baby', 22, 'Shampooing et gel douche 2 en 1 pour bébé. Formule sans larmes cliniquement testée. Nettoie délicatement les cheveux fins et la peau sensible des tout-petits.', 'شامبو وجل استحمام 2 في 1 للأطفال. تركيبة بدون دموع.', NULL, '/assets/baby_products.jpg', true),
+  ('Bébé', 'Crème Change Anti-Rougeurs', 'كريم الحفاضات ضد الاحمرار', 'PureBloom Baby', 26, 'Crème protectrice pour érythème fessier. Barrière protectrice à l''oxyde de zinc. Apaise les rougeurs en quelques heures et protège la peau des irritations dues aux couches.', 'كريم واقي لطفح الحفاضات. حاجز بأكسيد الزنك.', 'Recommandé', '/assets/baby_products.jpg', true),
+  ('Bébé', 'Lingettes Bébé Douceur', 'مناديل الطفل الناعمة', 'PureBloom Baby', 12, 'Lingettes ultra-douces pour bébé. Enrichies à l''aloé vera et au panthénol. Convient à la peau la plus sensible, même des prématurés. Sans alcool, sans parfum.', 'مناديل لطيفة للغاية للأطفال. غنية بالألوفيرا.', NULL, '/assets/baby_products.jpg', true);

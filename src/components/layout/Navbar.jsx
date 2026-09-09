@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ShoppingBag, Globe } from 'lucide-react'
+import { Menu, X, ShoppingCart, Globe } from 'lucide-react'
 import { useLanguage } from '../../context/LanguageContext'
+import { useCart } from '../../context/CartContext'
+import CartDrawer from '../ui/CartDrawer'
 import logoImg from '../../assets/logo.jpg'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { t, lang, toggleLang, isRTL } = useLanguage()
+  const { totalItems, setIsOpen: openCart } = useCart()
   const location = useLocation()
 
   useEffect(() => {
@@ -32,8 +35,11 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Cart Drawer (rendered at root so it's always accessible) */}
+      <CartDrawer />
+
       <motion.nav
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-rose-100'
             : 'bg-transparent'
@@ -74,7 +80,7 @@ export default function Navbar() {
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Language toggle */}
               <motion.button
                 onClick={toggleLang}
@@ -87,14 +93,29 @@ export default function Navbar() {
                 <span>{lang === 'fr' ? 'عربي' : 'FR'}</span>
               </motion.button>
 
-              {/* Shop CTA */}
-              <Link
-                to="/boutique"
-                className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition-all duration-300 shadow-soft hover:shadow-md"
+              {/* Cart icon with badge */}
+              <motion.button
+                onClick={() => openCart(true)}
+                className="relative flex items-center justify-center w-9 h-9 rounded-full bg-white border border-rose-100 text-charcoal hover:border-sage-300 hover:text-sage-600 transition-colors shadow-soft"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label={`Panier (${totalItems} article${totalItems > 1 ? 's' : ''})`}
               >
-                <ShoppingBag size={15} />
-                {t.nav.order}
-              </Link>
+                <ShoppingCart size={16} />
+                <AnimatePresence>
+                  {totalItems > 0 && (
+                    <motion.span
+                      key="badge"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold font-sans flex items-center justify-center leading-none"
+                    >
+                      {totalItems > 99 ? '99+' : totalItems}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
 
               {/* Mobile menu toggle */}
               <motion.button
@@ -124,7 +145,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
             />
             <motion.div
-              className={`fixed top-0 ${isRTL ? 'left-0' : 'right-0'} h-full w-72 bg-white z-50 shadow-2xl lg:hidden flex flex-col`}
+              className={`fixed top-0 ${isRTL ? 'left-0' : 'right-0'} h-full w-72 bg-white z-40 shadow-2xl lg:hidden flex flex-col`}
               initial={{ x: isRTL ? '-100%' : '100%' }}
               animate={{ x: 0 }}
               exit={{ x: isRTL ? '-100%' : '100%' }}
@@ -170,14 +191,19 @@ export default function Navbar() {
               </nav>
 
               {/* Drawer footer */}
-              <div className="p-5 border-t border-rose-100">
-                <Link
-                  to="/boutique"
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-sage-600 text-white text-sm font-medium hover:bg-sage-700 transition-colors"
+              <div className="p-5 border-t border-rose-100 space-y-2">
+                <button
+                  onClick={() => { openCart(true); setMenuOpen(false) }}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-full border border-sage-300 text-sage-600 text-sm font-medium hover:bg-sage-50 transition-colors relative"
                 >
-                  <ShoppingBag size={16} />
-                  {t.nav.order}
-                </Link>
+                  <ShoppingCart size={16} />
+                  {lang === 'ar' ? 'السلة' : 'Mon panier'}
+                  {totalItems > 0 && (
+                    <span className="absolute right-4 min-w-[20px] h-5 px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
               </div>
             </motion.div>
           </>

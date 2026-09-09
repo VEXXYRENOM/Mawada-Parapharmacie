@@ -2,6 +2,26 @@
  * queries.js — Fonctions d'accès aux données Supabase
  * Toutes les fonctions retournent { data, error } ou la donnée directement.
  * Les erreurs sont loguées mais ne bloquent jamais l'UX.
+ *
+ * Tables Supabase requises :
+ *  - products      : ajouter colonne `original_price float8 nullable`
+ *  - promo_codes   : voir schéma ci-dessous
+ *
+ * SQL à exécuter dans Supabase SQL Editor :
+ *
+ *   ALTER TABLE products ADD COLUMN IF NOT EXISTS original_price float8;
+ *
+ *   CREATE TABLE IF NOT EXISTS promo_codes (
+ *     id            uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+ *     code          text UNIQUE NOT NULL,
+ *     discount_type text NOT NULL DEFAULT 'percentage',  -- 'percentage' | 'fixed'
+ *     discount_value numeric(10,2) NOT NULL DEFAULT 0,
+ *     expires_at    timestamptz,
+ *     max_uses      int,
+ *     current_uses  int NOT NULL DEFAULT 0,
+ *     is_active     boolean NOT NULL DEFAULT true,
+ *     created_at    timestamptz DEFAULT now()
+ *   );
  */
 import { supabase } from './supabase'
 
@@ -141,6 +161,58 @@ export async function updateOrderStatus(id, status) {
 }
 
 // ─────────────────────────────────────────
+// PRODUCT REQUESTS
+// ─────────────────────────────────────────
+
+/**
+ * Enregistre une demande de produit (public — silencieux si échec)
+ */
+export async function createProductRequest(requestData) {
+  try {
+    const { error } = await supabase.from('product_requests').insert(requestData)
+    if (error) console.error('[createProductRequest]', error.message)
+    return !error
+  } catch (e) {
+    console.error('[createProductRequest] Exception:', e)
+    return false
+  }
+}
+
+/**
+ * Récupère toutes les demandes de produits (admin)
+ */
+export async function getAllProductRequests() {
+  const { data, error } = await supabase
+    .from('product_requests')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) console.error('[getAllProductRequests]', error.message)
+  return data ?? []
+}
+
+/**
+ * Met à jour le statut d'une demande (admin)
+ */
+export async function updateProductRequestStatus(id, status) {
+  const { error } = await supabase
+    .from('product_requests')
+    .update({ status })
+    .eq('id', id)
+  return { error }
+}
+
+/**
+ * Supprime une demande (admin)
+ */
+export async function deleteProductRequest(id) {
+  const { error } = await supabase
+    .from('product_requests')
+    .delete()
+    .eq('id', id)
+  return { error }
+}
+
+// ─────────────────────────────────────────
 // SITE CONTENT
 // ─────────────────────────────────────────
 
@@ -198,4 +270,110 @@ export async function uploadProductImage(file, fileName) {
     .getPublicUrl(fileName)
 
   return data.publicUrl
+}
+
+// ─────────────────────────────────────────
+// PROMO CODES
+// ─────────────────────────────────────────
+
+/**
+ * Récupère tous les codes promo (admin)
+ */
+export async function getAllPromoCodes() {
+  const { data, error } = await supabase
+    .from('promo_codes')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) console.error('[getAllPromoCodes]', error.message)
+  return data ?? []
+}
+
+/**
+ * Crée un nouveau code promo (admin)
+ * @param {{ code: string, discount_type: 'percentage'|'fixed', discount_value: number, expires_at?: string|null, max_uses?: number|null, is_active: boolean }} promo
+ */
+export async function createPromoCode(promo) {
+  const { data, error } = await supabase
+    .from('promo_codes')
+    .insert(promo)
+    .select()
+    .single()
+  return { data, error }
+}
+
+/**
+ * Met à jour un code promo (admin)
+ * @param {string} id
+ * @param {object} updates
+ */
+export async function updatePromoCode(id, updates) {
+  const { data, error } = await supabase
+    .from('promo_codes')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
+/**
+ * Supprime un code promo (admin)
+ * @param {string} id
+ */
+export async function deletePromoCode(id) {
+  const { error } = await supabase
+    .from('promo_codes')
+    .delete()
+    .eq('id', id)
+  return { error }
+}
+
+/**
+ * Valide un code promo côté public
+ * Retourne { valid: true, promo } ou { valid: false, reason: string }
+ * @param {string} code
+ */
+export async function validatePromoCode(code) {
+  const { data, error } = await supabase
+    .from('promo_codes')
+    .select('*')
+    .eq('code', code.trim().toUpperCase())
+    .eq('is_active', true)
+    .single()
+
+  if (error || !data) return { valid: false, reason: 'Code invalide ou inexistant.' }
+
+  // Vérifier expiration
+  if (data.expires_at && new Date(data.expires_at) < new Date()) {
+    return { valid: false, reason: 'Ce code promo a expiré.' }
+  }
+
+  // Vérifier limite d'utilisations
+  if (data.max_uses !== null && data.current_uses >= data.max_uses) {
+    return { valid: false, reason: 'Ce code promo a atteint sa limite d\'utilisation.' }
+  }
+
+  return { valid: true, promo: data }
+}
+
+/**
+ * Incrémente le compteur d'utilisations d'un code promo
+ * @param {string} id
+ */
+export async function incrementPromoUsage(id) {
+  const { error } = await supabase.rpc('increment_promo_usage', { promo_id: id })
+  // Fallback manuel si la fonction RPC n'existe pas
+  if (error) {
+    const { data: current } = await supabase
+      .from('promo_codes')
+      .select('current_uses')
+      .eq('id', id)
+      .single()
+    if (current) {
+      await supabase
+        .from('promo_codes')
+        .update({ current_uses: (current.current_uses ?? 0) + 1 })
+        .eq('id', id)
+    }
+  }
 }

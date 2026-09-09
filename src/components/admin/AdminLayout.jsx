@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
-import { Package, ClipboardList, FileText, LogOut, Leaf, Menu, X } from 'lucide-react'
+import { Package, ClipboardList, FileText, LogOut, Leaf, Menu, X, Tag } from 'lucide-react'
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Bell } from 'lucide-react'
 
 const NAV_ITEMS = [
   {
@@ -23,6 +24,18 @@ const NAV_ITEMS = [
     icon: FileText,
     label: '✏️ Contenu du site',
     desc: 'Textes et descriptions',
+  },
+  {
+    to: '/admin/demandes',
+    icon: Bell,
+    label: '🔔 Demandes',
+    desc: 'Alertes & produits recherchés',
+  },
+  {
+    to: '/admin/promo',
+    icon: Tag,
+    label: '🎟️ Codes Promo',
+    desc: 'Générer & gérer les codes',
   },
 ]
 

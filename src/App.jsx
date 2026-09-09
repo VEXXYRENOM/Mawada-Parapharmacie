@@ -4,6 +4,8 @@ import { AnimatePresence } from 'framer-motion'
 import { HelmetProvider } from 'react-helmet-async'
 import { LanguageProvider } from './context/LanguageContext'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
+import { SettingsProvider, useSettings } from './context/SettingsContext'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import FloatingButtons from './components/layout/FloatingButtons'
@@ -21,6 +23,8 @@ import AdminLoginPage from './pages/admin/AdminLoginPage'
 import AdminProductsPage from './pages/admin/AdminProductsPage'
 import AdminOrdersPage from './pages/admin/AdminOrdersPage'
 import AdminContentPage from './pages/admin/AdminContentPage'
+import AdminPromoCodesPage from './pages/admin/AdminPromoCodesPage'
+import AdminRequestsPage from './pages/admin/AdminRequestsPage'
 
 function PageLoader() {
   return (
@@ -48,20 +52,53 @@ function PublicLayout() {
   )
 }
 
+function GlobalSettings() {
+  const { settings, loading } = useSettings()
+
+  if (loading || !settings.pixelId) return null
+
+  return (
+    <Helmet>
+      <script>
+        {`
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '${settings.pixelId}');
+          fbq('track', 'PageView');
+        `}
+      </script>
+      <noscript>
+        {`<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${settings.pixelId}&ev=PageView&noscript=1" />`}
+      </noscript>
+    </Helmet>
+  )
+}
+
 export default function App() {
   return (
     <HelmetProvider>
       <LanguageProvider>
         <AuthProvider>
-          <BrowserRouter>
-            <Routes>
+          <SettingsProvider>
+            <CartProvider>
+              <BrowserRouter>
+                <GlobalSettings />
+                <Routes>
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<Navigate to="/admin/produits" replace />} />
                 <Route path="produits" element={<AdminProductsPage />} />
                 <Route path="commandes" element={<AdminOrdersPage />} />
+                <Route path="demandes" element={<AdminRequestsPage />} />
                 <Route path="contenu" element={<AdminContentPage />} />
+                <Route path="promo" element={<AdminPromoCodesPage />} />
               </Route>
 
               {/* Public Routes */}
@@ -74,8 +111,10 @@ export default function App() {
                 {/* Catch-all redirect to home */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
-            </Routes>
-          </BrowserRouter>
+              </Routes>
+            </BrowserRouter>
+            </CartProvider>
+          </SettingsProvider>
         </AuthProvider>
       </LanguageProvider>
     </HelmetProvider>

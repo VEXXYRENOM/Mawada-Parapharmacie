@@ -32,6 +32,15 @@ const CONTENT_FIELDS = [
       { key: 'testimonial_3_name', label: 'Témoignage 3 - Nom', type: 'text', placeholder: 'Meriem Jlassi' },
       { key: 'testimonial_3_text', label: 'Témoignage 3 - Avis', type: 'textarea', placeholder: 'La crème pour bébé est absolument parfaite...' },
     ]
+  },
+  {
+    section: 'Paramètres Généraux & Réseaux',
+    fields: [
+      { key: 'whatsapp_number', label: 'Numéro WhatsApp', type: 'text', placeholder: '21623104341' },
+      { key: 'facebook_url', label: 'Lien Page Facebook', type: 'text', placeholder: 'https://www.facebook.com/...' },
+      { key: 'messenger_url', label: 'Lien Messenger', type: 'text', placeholder: 'https://m.me/...' },
+      { key: 'pixel_id', label: 'ID Facebook Pixel (Optionnel)', type: 'text', placeholder: '123456789012345' },
+    ]
   }
 ]
 

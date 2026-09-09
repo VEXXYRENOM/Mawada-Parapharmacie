@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
-import { FACEBOOK_PAGE, MESSENGER_URL } from '../../utils/whatsapp'
+import { useCart } from '../../context/CartContext'
+import { useSettings } from '../../context/SettingsContext'
 
 const WhatsAppIcon = () => (
   <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24" aria-hidden="true">
@@ -18,11 +19,16 @@ const MessengerIcon = () => (
 export default function FloatingButtons() {
   const [hoveredId, setHoveredId] = useState(null)
   const { t, isRTL } = useLanguage()
+  const { isOpen: cartOpen } = useCart()
+  const { settings } = useSettings()
+
+  // Masquer quand le panier est ouvert pour éviter le chevauchement
+  if (cartOpen) return null
 
   const buttons = [
     {
       id: 'whatsapp',
-      href: 'https://wa.me/21623104341',
+      href: `https://wa.me/${settings.whatsappNumber}`,
       label: t.floating.whatsapp_tooltip,
       bgClass: 'bg-[#25D366]',
       Icon: WhatsAppIcon,
@@ -30,7 +36,7 @@ export default function FloatingButtons() {
     },
     {
       id: 'messenger',
-      href: FACEBOOK_PAGE,
+      href: settings.messengerUrl || settings.facebookUrl,
       label: t.floating.messenger_tooltip,
       bgClass: 'bg-[#0084FF]',
       Icon: MessengerIcon,
@@ -40,7 +46,7 @@ export default function FloatingButtons() {
 
   return (
     <div
-      className={`fixed bottom-6 z-50 flex flex-col gap-3 ${isRTL ? 'left-5' : 'right-5'}`}
+      className={`fixed bottom-6 z-40 flex flex-col gap-3 ${isRTL ? 'left-5' : 'right-5'}`}
       aria-label="Boutons de contact flottants"
     >
       {buttons.map(btn => (

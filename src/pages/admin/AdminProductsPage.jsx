@@ -5,13 +5,21 @@ import { getAllProducts, deleteProduct, upsertProduct } from '../../lib/queries'
 import { Toast, useToast } from '../../components/admin/Toast'
 import ProductFormModal from '../../components/admin/ProductFormModal'
 
-const CATEGORY_LABELS = {
-  'complements-enfants': 'Compléments Enfants',
-  'soins-visage':        'Soins Visage',
-  'soins-corps':         'Soins Corps',
-  'cosmetique':          'Cosmétique',
-  'bebe':                'Bébé',
-}
+// Toutes les catégories réelles du magasin (ordre d'affichage)
+const ALL_CATEGORIES = [
+  'Hair care',
+  'Complément Alimentaire',
+  'Nature & Bio',
+  'Skin care',
+  'Body care',
+  'Soin',
+  'Cosmétique',
+  'Beauty',
+  'Bébé',
+  'Dentaire',
+  'Orthopédie',
+  'Santé',
+]
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([])
@@ -32,8 +40,8 @@ export default function AdminProductsPage() {
 
   useEffect(() => { fetchProducts() }, [fetchProducts])
 
-  // Catégories uniques
-  const categories = ['all', ...new Set(products.map(p => p.category))]
+  // Catégories fixes (toutes les 12) — indépendantes des produits existants
+  const categories = ['all', ...ALL_CATEGORIES]
 
   // Filtrage
   const filtered = products.filter(p => {
@@ -175,44 +183,121 @@ export default function AdminProductsPage() {
         </div>
 
         {/* Category filter */}
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <select
             value={filterCat}
             onChange={e => setFilterCat(e.target.value)}
-            className="h-10 pl-4 pr-8 border border-rose-100 rounded-xl font-sans text-sm text-charcoal focus:outline-none focus:border-sage-400 focus:ring-2 focus:ring-sage-100 transition-all bg-white appearance-none cursor-pointer"
+            className="w-full sm:w-auto h-10 pl-4 pr-8 border border-rose-100 rounded-xl font-sans text-sm text-charcoal focus:outline-none focus:border-sage-400 focus:ring-2 focus:ring-sage-100 transition-all bg-white appearance-none cursor-pointer"
           >
             <option value="all">Toutes les catégories</option>
-            {categories.filter(c => c !== 'all').map(cat => (
-              <option key={cat} value={cat}>{CATEGORY_LABELS[cat] ?? cat}</option>
+            {ALL_CATEGORIES.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
           <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-warm-gray pointer-events-none" />
         </div>
       </div>
 
-      {/* Table */}
+      {/* ─── Mobile: Card list ─── */}
       {loading ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="h-16 bg-white rounded-xl border border-rose-50 animate-pulse" />
+            <div key={i} className="h-20 bg-white rounded-xl border border-rose-50 animate-pulse" />
           ))}
         </div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-rose-100 py-16 text-center shadow-sm">
+          <p className="font-serif text-lg text-charcoal mb-2">Aucun produit trouvé</p>
+          <p className="text-sm text-warm-gray font-sans">Modifiez vos filtres ou ajoutez un nouveau produit.</p>
+        </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-rose-100 overflow-hidden shadow-sm">
-          {filtered.length === 0 ? (
-            <div className="py-16 text-center">
-              <p className="font-serif text-lg text-charcoal mb-2">Aucun produit trouvé</p>
-              <p className="text-sm text-warm-gray font-sans">Modifiez vos filtres ou ajoutez un nouveau produit.</p>
-            </div>
-          ) : (
+        <>
+          {/* MOBILE CARDS — visible on < md */}
+          <div className="md:hidden space-y-3">
+            {filtered.map(product => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden ${!product.is_active ? 'opacity-60' : ''}`}
+              >
+                <div className="flex items-start gap-3 p-3">
+                  {/* Image */}
+                  {product.image_url ? (
+                    <img src={product.image_url} alt={product.name_fr}
+                      className="w-16 h-16 rounded-xl object-cover border border-rose-100 shrink-0" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-xl bg-rose-50 border border-rose-100 shrink-0 flex items-center justify-center text-2xl">📦</div>
+                  )}
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold font-sans text-charcoal line-clamp-2 leading-snug">{product.name_fr}</p>
+                    <p className="text-xs text-warm-gray font-sans mt-0.5">{product.brand}</p>
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      {product.original_price && product.original_price > product.price ? (
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full font-sans font-bold">
+                            -{Math.round((1 - product.price / product.original_price) * 100)}%
+                          </span>
+                          <span className="text-xs text-rose-400 line-through font-sans">{product.original_price?.toFixed(2)} TND</span>
+                          <span className="text-sm font-bold font-sans text-rose-600">{product.price?.toFixed(2)} TND</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm font-bold font-sans text-sage-600">{product.price?.toFixed(2)} TND</span>
+                      )}
+                      <span className="text-[10px] font-sans text-warm-gray bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">{product.category}</span>
+                      {product.badge && (
+                        <span className="text-[10px] font-sans text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">{product.badge}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom bar: status toggle + actions */}
+                <div className="flex items-center border-t border-rose-50 divide-x divide-rose-50">
+                  {/* Toggle visible */}
+                  <button
+                    onClick={() => handleToggleActive(product)}
+                    className="flex-1 flex items-center justify-center gap-2 h-11 text-sm font-sans transition-colors"
+                    aria-label={product.is_active ? 'Masquer' : 'Afficher'}
+                  >
+                    {product.is_active
+                      ? <><ToggleRight size={20} className="text-emerald-500" /><span className="text-emerald-600 text-xs">Visible</span></>
+                      : <><ToggleLeft size={20} className="text-warm-gray" /><span className="text-warm-gray text-xs">Masqué</span></>
+                    }
+                  </button>
+                  {/* Edit */}
+                  <button
+                    onClick={() => { setEditingProduct(product); setModalOpen(true) }}
+                    className="flex-1 flex items-center justify-center gap-1.5 h-11 text-sage-600 hover:bg-sage-50 transition-colors text-xs font-medium font-sans"
+                    aria-label={`Modifier ${product.name_fr}`}
+                  >
+                    <Pencil size={15} /> Modifier
+                  </button>
+                  {/* Delete */}
+                  <button
+                    onClick={() => setDeleteConfirm(product)}
+                    className="flex-1 flex items-center justify-center gap-1.5 h-11 text-rose-500 hover:bg-rose-50 transition-colors text-xs font-medium font-sans"
+                    aria-label={`Supprimer ${product.name_fr}`}
+                  >
+                    <Trash2 size={15} /> Supprimer
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* DESKTOP TABLE — hidden on < md */}
+          <div className="hidden md:block bg-white rounded-2xl border border-rose-100 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-rose-100 bg-rose-50/40">
                     <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider">Produit</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider hidden md:table-cell">Catégorie</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider hidden lg:table-cell">Catégorie</th>
                     <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider">Prix</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider hidden sm:table-cell">Badge</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider hidden lg:table-cell">Badge</th>
                     <th className="text-left px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider">Statut</th>
                     <th className="text-right px-4 py-3 text-xs font-medium font-sans text-warm-gray uppercase tracking-wider">Actions</th>
                   </tr>
@@ -225,15 +310,11 @@ export default function AdminProductsPage() {
                       animate={{ opacity: 1 }}
                       className={`hover:bg-rose-50/30 transition-colors ${!product.is_active ? 'opacity-50' : ''}`}
                     >
-                      {/* Image + Nom */}
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {product.image_url ? (
-                            <img
-                              src={product.image_url}
-                              alt={product.name_fr}
-                              className="w-10 h-10 rounded-xl object-cover border border-rose-100 shrink-0"
-                            />
+                            <img src={product.image_url} alt={product.name_fr}
+                              className="w-10 h-10 rounded-xl object-cover border border-rose-100 shrink-0" />
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 shrink-0 flex items-center justify-center text-rose-300 text-xs">?</div>
                           )}
@@ -243,39 +324,31 @@ export default function AdminProductsPage() {
                           </div>
                         </div>
                       </td>
-
-                      {/* Catégorie */}
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <span className="text-xs font-sans text-warm-gray bg-rose-50 px-2.5 py-1 rounded-full border border-rose-100">
-                          {CATEGORY_LABELS[product.category] ?? product.category}
-                        </span>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        <span className="text-xs font-sans text-warm-gray bg-rose-50 px-2.5 py-1 rounded-full border border-rose-100">{product.category}</span>
                       </td>
-
-                      {/* Prix */}
                       <td className="px-4 py-3">
-                        <span className="text-sm font-semibold font-sans text-sage-600">
-                          {product.price?.toFixed(2)} TND
-                        </span>
-                      </td>
-
-                      {/* Badge */}
-                      <td className="px-4 py-3 hidden sm:table-cell">
-                        {product.badge ? (
-                          <span className="text-xs font-sans text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-                            {product.badge}
-                          </span>
+                        {product.original_price && product.original_price > product.price ? (
+                          <div className="flex flex-col gap-0.5">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full font-sans font-bold">
+                                -{Math.round((1 - product.price / product.original_price) * 100)}%
+                              </span>
+                              <span className="text-xs text-rose-400 line-through font-sans">{product.original_price?.toFixed(2)} TND</span>
+                            </div>
+                            <span className="text-sm font-bold font-sans text-rose-600">{product.price?.toFixed(2)} TND</span>
+                          </div>
                         ) : (
-                          <span className="text-xs text-warm-gray font-sans">—</span>
+                          <span className="text-sm font-semibold font-sans text-sage-600">{product.price?.toFixed(2)} TND</span>
                         )}
                       </td>
-
-                      {/* Actif / Inactif */}
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        {product.badge ? (
+                          <span className="text-xs font-sans text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">{product.badge}</span>
+                        ) : <span className="text-xs text-warm-gray font-sans">—</span>}
+                      </td>
                       <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleToggleActive(product)}
-                          className="flex items-center gap-2 group"
-                          aria-label={product.is_active ? 'Masquer le produit' : 'Afficher le produit'}
-                        >
+                        <button onClick={() => handleToggleActive(product)} className="flex items-center gap-2 group" aria-label={product.is_active ? 'Masquer' : 'Afficher'}>
                           {product.is_active
                             ? <ToggleRight size={22} className="text-emerald-500 group-hover:text-emerald-600 transition-colors" />
                             : <ToggleLeft size={22} className="text-warm-gray group-hover:text-charcoal transition-colors" />
@@ -285,22 +358,16 @@ export default function AdminProductsPage() {
                           </span>
                         </button>
                       </td>
-
-                      {/* Actions */}
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => { setEditingProduct(product); setModalOpen(true) }}
+                          <button onClick={() => { setEditingProduct(product); setModalOpen(true) }}
                             className="w-8 h-8 rounded-lg bg-sage-50 flex items-center justify-center text-sage-600 hover:bg-sage-100 transition-colors"
-                            aria-label={`Modifier ${product.name_fr}`}
-                          >
+                            aria-label={`Modifier ${product.name_fr}`}>
                             <Pencil size={14} />
                           </button>
-                          <button
-                            onClick={() => setDeleteConfirm(product)}
+                          <button onClick={() => setDeleteConfirm(product)}
                             className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 hover:bg-rose-100 transition-colors"
-                            aria-label={`Supprimer ${product.name_fr}`}
-                          >
+                            aria-label={`Supprimer ${product.name_fr}`}>
                             <Trash2 size={14} />
                           </button>
                         </div>
@@ -310,8 +377,8 @@ export default function AdminProductsPage() {
                 </tbody>
               </table>
             </div>
-          )}
-        </div>
+          </div>
+        </>
       )}
 
       {/* Results count */}
